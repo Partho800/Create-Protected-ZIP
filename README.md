@@ -143,3 +143,5 @@ npm run test:e2e
 ## License
 
 MIT License. Free and open source for personal and enterprise use.
+#   C r e a t e - P r o t e c t e d - Z I P  
+ 
