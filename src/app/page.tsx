@@ -54,7 +54,7 @@ export default function Home() {
     !isGenerating;
 
   return (
-    <div className="min-h-screen flex flex-col bg-zinc-950 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(16,185,129,0.15),rgba(255,255,255,0))]">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-zinc-950 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(16,185,129,0.08),rgba(255,255,255,0))] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(16,185,129,0.15),rgba(255,255,255,0))] transition-colors duration-200">
       {/* Top Header */}
       <Header
         onReset={files.length > 0 ? resetAll : undefined}
@@ -66,7 +66,7 @@ export default function Home() {
 
         {/* Error Alert */}
         {error && (
-          <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-xs sm:text-sm text-red-400 flex items-start gap-3 shadow-lg shadow-red-500/5 animate-in fade-in duration-200">
+          <div className="p-4 rounded-2xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-xs sm:text-sm text-red-700 dark:text-red-400 flex items-start gap-3 shadow-md shadow-red-500/5 animate-in fade-in duration-200">
             <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
             <div className="flex-1">
               <strong className="font-semibold block mb-0.5">Operation Notice</strong>
@@ -89,7 +89,7 @@ export default function Home() {
         )}
 
         {/* Core Workspace */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
           {/* Left Column: File Ingestion & File Tree */}
           <div className="lg:col-span-7 space-y-6">
             <Dropzone
@@ -107,7 +107,7 @@ export default function Home() {
           </div>
 
           {/* Right Column: Password, Settings & Action */}
-          <div className="lg:col-span-5 space-y-6 sticky top-24">
+          <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-24">
             <PasswordForm
               password={password}
               confirmPassword={confirmPassword}
@@ -122,21 +122,21 @@ export default function Home() {
 
             {/* Auto-detected Output Archive Badge */}
             {files.length > 0 && (
-              <div className="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800 backdrop-blur-md flex items-center justify-between gap-3">
+              <div className="p-4 rounded-2xl bg-white/80 dark:bg-zinc-900/60 border border-slate-200/80 dark:border-zinc-800 backdrop-blur-md shadow-sm flex items-center justify-between gap-3 transition-colors duration-200">
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex-shrink-0">
+                  <div className="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20 flex-shrink-0">
                     <FileArchive className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-[11px] text-zinc-400">Target Archive</div>
-                    <div className="font-mono text-xs font-semibold text-emerald-300 truncate">
+                    <div className="text-[11px] text-slate-500 dark:text-zinc-400">Target Archive</div>
+                    <div className="font-mono text-xs font-semibold text-emerald-600 dark:text-emerald-300 truncate">
                       {archiveName}
                     </div>
                   </div>
                 </div>
 
                 <div className="text-right flex-shrink-0">
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
                     {encryptionMode === "zipcrypto"
                       ? "Windows Native"
                       : "AES-256 (Level 9)"}
@@ -146,15 +146,15 @@ export default function Home() {
             )}
 
             {/* Action Bar */}
-            <div className="p-5 rounded-2xl bg-zinc-900/80 border border-zinc-800 backdrop-blur-md space-y-3">
+            <div className="p-5 rounded-2xl bg-white/90 dark:bg-zinc-900/80 border border-slate-200/80 dark:border-zinc-800 backdrop-blur-md shadow-md space-y-3 transition-colors duration-200">
               <button
                 type="button"
                 disabled={!canGenerate}
                 onClick={generateZip}
                 className={`w-full py-3.5 px-6 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all duration-200 ${
                   canGenerate
-                    ? "bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-400 hover:from-emerald-400 hover:via-teal-300 hover:to-cyan-300 text-zinc-950 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
-                    : "bg-zinc-800 text-zinc-500 cursor-not-allowed border border-zinc-700/50"
+                    ? "bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-500 dark:from-emerald-500 dark:via-teal-400 dark:to-cyan-400 hover:from-emerald-500 hover:via-teal-400 hover:to-cyan-400 text-white dark:text-zinc-950 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+                    : "bg-slate-100 dark:bg-zinc-800 text-slate-400 dark:text-zinc-500 cursor-not-allowed border border-slate-200 dark:border-zinc-700/50"
                 }`}
               >
                 <Lock className="w-4 h-4" />
@@ -166,7 +166,7 @@ export default function Home() {
                 <ArrowRight className="w-4 h-4" />
               </button>
 
-              <div className="flex items-center justify-between text-[11px] text-zinc-500 px-1">
+              <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-zinc-500 px-1">
                 <span>
                   {files.length === 0
                     ? "Select files or a folder to begin"
@@ -181,7 +181,7 @@ export default function Home() {
                     type="button"
                     onClick={resetAll}
                     disabled={isGenerating}
-                    className="text-zinc-400 hover:text-red-400 transition-colors flex items-center gap-1 disabled:opacity-50"
+                    className="text-slate-400 hover:text-red-600 dark:text-zinc-400 dark:hover:text-red-400 transition-colors flex items-center gap-1 disabled:opacity-50"
                   >
                     <RotateCcw className="w-3 h-3" />
                     Reset
@@ -205,4 +205,5 @@ export default function Home() {
       <Footer />
     </div>
   );
+
 }
