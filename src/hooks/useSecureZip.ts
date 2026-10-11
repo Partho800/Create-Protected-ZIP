@@ -209,7 +209,7 @@ export function useSecureZip() {
       }));
       return null;
     }
-  }, [files, password, confirmPassword, archiveName, zip64, compressionLevel]);
+  }, [files, password, confirmPassword, archiveName, zip64, compressionLevel, encryptionMode]);
 
   const verifyArchive = useCallback(
     async (blobToVerify?: Blob, testPassword?: string) => {

@@ -280,3 +280,90 @@ export async function verifyZipArchive(
     await zipReader.close();
   }
 }
+
+export interface DecryptedEntryContent {
+  filename: string;
+  size: number;
+  blob: Blob;
+  text?: string;
+  isText: boolean;
+  isImage: boolean;
+  mimeType: string;
+}
+
+/**
+ * Extracts and decrypts a specific file entry from an encrypted ZIP archive.
+ */
+export async function extractZipEntry(
+  zipBlob: Blob,
+  filename: string,
+  password?: string
+): Promise<DecryptedEntryContent> {
+  const zipReader = new ZipReader(new BlobReader(zipBlob));
+  try {
+    const entries = await zipReader.getEntries();
+    const entry = entries.find((e) => e.filename === filename);
+    if (!entry) {
+      throw new Error(`File "${filename}" not found in archive.`);
+    }
+
+    if (entry.directory) {
+      throw new Error(`"${filename}" is a directory and cannot be viewed as a file.`);
+    }
+
+    const blobWriter = new BlobWriter();
+    const blob = await (entry as any).getData(blobWriter, { password });
+
+    const ext = filename.split(".").pop()?.toLowerCase() || "";
+    const isImage = ["png", "jpg", "jpeg", "webp", "gif", "svg", "bmp", "ico"].includes(ext);
+    const isText =
+      [
+        "txt",
+        "md",
+        "json",
+        "js",
+        "ts",
+        "tsx",
+        "jsx",
+        "html",
+        "css",
+        "py",
+        "rs",
+        "go",
+        "c",
+        "cpp",
+        "h",
+        "java",
+        "xml",
+        "yaml",
+        "yml",
+        "csv",
+        "log",
+        "sh",
+        "sql",
+      ].includes(ext) || (blob.type && blob.type.startsWith("text/"));
+
+    let text: string | undefined = undefined;
+    if (isText && blob.size < 5 * 1024 * 1024) {
+      try {
+        text = await blob.text();
+      } catch {
+        // Fallback if text decoding fails
+      }
+    }
+
+    return {
+      filename,
+      size: blob.size,
+      blob,
+      text,
+      isText,
+      isImage,
+      mimeType:
+        blob.type || (isImage ? `image/${ext}` : isText ? "text/plain" : "application/octet-stream"),
+    };
+  } finally {
+    await zipReader.close();
+  }
+}
+

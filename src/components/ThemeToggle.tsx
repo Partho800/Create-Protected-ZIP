@@ -7,64 +7,70 @@ export function ThemeToggle() {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [mounted, setMounted] = useState(false);
 
+  const applyTheme = (targetTheme: "light" | "dark") => {
+    if (typeof document === "undefined") return;
+    const root = document.documentElement;
+    if (targetTheme === "dark") {
+      root.classList.add("dark");
+      root.setAttribute("data-theme", "dark");
+      root.style.colorScheme = "dark";
+    } else {
+      root.classList.remove("dark");
+      root.setAttribute("data-theme", "light");
+      root.style.colorScheme = "light";
+    }
+  };
+
   useEffect(() => {
     setMounted(true);
-    // Check initial preference: saved in localStorage or system preference
     const saved = localStorage.getItem("theme") as "light" | "dark" | null;
-    if (saved) {
+    if (saved === "light" || saved === "dark") {
       setTheme(saved);
-      if (saved === "dark") {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
+      applyTheme(saved);
     } else {
-      // Default to dark or check system preference
       const isSystemDark =
         typeof window !== "undefined" && typeof window.matchMedia === "function"
           ? window.matchMedia("(prefers-color-scheme: dark)").matches
           : false;
       const initialTheme = isSystemDark ? "dark" : "light";
       setTheme(initialTheme);
-      if (initialTheme === "dark") {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
+      applyTheme(initialTheme);
     }
-
   }, []);
 
   const toggleTheme = () => {
     const nextTheme = theme === "dark" ? "light" : "dark";
     setTheme(nextTheme);
     localStorage.setItem("theme", nextTheme);
-    if (nextTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    applyTheme(nextTheme);
   };
 
   if (!mounted) {
     return (
-      <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-zinc-800/80 border border-slate-200 dark:border-zinc-700/60 animate-pulse" />
+      <div className="w-9 h-9 rounded-xl bg-slate-200/60 dark:bg-zinc-800/60 border border-slate-300/60 dark:border-zinc-700/60 animate-pulse" />
     );
   }
+
+  const isDark = theme === "dark";
 
   return (
     <button
       type="button"
       onClick={toggleTheme}
-      className="relative p-2 rounded-xl text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-100 bg-slate-100/80 hover:bg-slate-200/80 dark:bg-zinc-800/80 dark:hover:bg-zinc-700/80 border border-slate-200 dark:border-zinc-700/60 transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm"
-      title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+      className="group relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-slate-700 hover:text-slate-900 dark:text-zinc-300 dark:hover:text-white bg-white/90 hover:bg-slate-100 dark:bg-zinc-900/90 dark:hover:bg-zinc-850 border border-slate-200 dark:border-zinc-800 shadow-sm transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+      title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
       aria-label="Toggle theme"
     >
-      {theme === "dark" ? (
-        <Sun className="w-4 h-4 text-amber-400 transition-transform hover:rotate-45" />
-      ) : (
-        <Moon className="w-4 h-4 text-indigo-600 transition-transform hover:-rotate-12" />
-      )}
+      <div className="relative flex items-center justify-center w-5 h-5 rounded-lg bg-amber-500/10 dark:bg-zinc-800 text-amber-500 dark:text-amber-400">
+        {isDark ? (
+          <Sun className="w-3.5 h-3.5 text-amber-400 group-hover:rotate-45 transition-transform duration-300" />
+        ) : (
+          <Moon className="w-3.5 h-3.5 text-indigo-600 group-hover:-rotate-12 transition-transform duration-300" />
+        )}
+      </div>
+      <span className="hidden sm:inline text-[11px] font-semibold text-slate-600 dark:text-zinc-300">
+        {isDark ? "Light" : "Dark"}
+      </span>
     </button>
   );
 }

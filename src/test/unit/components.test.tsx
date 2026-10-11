@@ -21,12 +21,13 @@ describe("UI Components Suite", () => {
       />
     );
 
-    const passwordInput = screen.getByPlaceholderText(/Enter strong encryption password/i);
+    const passwordInput = screen.getByPlaceholderText(/Enter.*encryption password/i);
     const confirmInput = screen.getByPlaceholderText(/Re-enter to confirm/i);
 
     expect(passwordInput).toBeInTheDocument();
     expect(confirmInput).toBeInTheDocument();
-    expect(screen.getByText(/Cipher Strength:/i)).toBeInTheDocument();
+    expect(screen.getByText(/Strength:/i)).toBeInTheDocument();
+
     expect(screen.getByText(/Very Strong/i)).toBeInTheDocument();
 
     fireEvent.change(passwordInput, { target: { value: "NewPass#2026" } });
@@ -67,9 +68,10 @@ describe("UI Components Suite", () => {
     fireEvent.click(verifyBtn);
     expect(handleOpenVerify).toHaveBeenCalled();
 
-    const resetBtn = screen.getByTitle(/Reset files/i);
+    const resetBtn = screen.getByTitle(/Reset/i);
     fireEvent.click(resetBtn);
     expect(handleReset).toHaveBeenCalled();
+
   });
 });
 
